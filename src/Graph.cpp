@@ -30,9 +30,10 @@ Graph::~Graph(){
 
 //Function to add an edge between two vertices
 void Graph::addEdge(int source, int dest, int weight){
-  if (source < 0 || source >= numVertices || dest < 0 || dest >= numVertices)
-        throw "Invalid vertex index"; //throw an exception if the input is invalid
-        Neighbor* newVertex = new Neighbor(dest, weight, adjList[source]);
+  if (source < 0 || source >= numVertices || dest < 0 || dest >= numVertices) {
+    throw "Invalid vertex index";
+  }
+  Neighbor* newVertex = new Neighbor(dest, weight, adjList[source]);
         adjList[source] = newVertex; //add the neighbor to the list of the source vertex
     
         newVertex = new Neighbor(source, weight, adjList[dest]);
