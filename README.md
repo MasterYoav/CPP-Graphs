@@ -1,6 +1,6 @@
 # Graph Algorithms Project – System Programming 2
 
-📧 Author: [your_email@example.com]  
+📧 Author: [realyoavperetz@gmail.com]  
 📁 Course: System Programming 2  
 📚 Topic: Graph algorithms using adjacency list, no STL
 
