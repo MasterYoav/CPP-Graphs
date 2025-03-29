@@ -116,13 +116,14 @@ TEST_CASE("Dijkstra path choice") {
     Graph tree = Algorithms::dijkstra(g, 0);
     CHECK(tree.getNumVertices() == 4);
 
-    Neighbor* n = tree.getNeighbors(2);
-    bool cameFrom1 = false;
-    while (n) {
-        if (n->vertex == 1) cameFrom1 = true;
-        n = n->next;
+    // Instead of checking tree.getNeighbors(2), we check from 1 → 2
+    Neighbor* m = tree.getNeighbors(1);
+    bool hasEdgeTo2 = false;
+    while (m) {
+        if (m->vertex == 2) hasEdgeTo2 = true;
+        m = m->next;
     }
-    CHECK(cameFrom1);
+    CHECK(hasEdgeTo2);
 }
 
 // Prim should return MST with minimum weight
@@ -204,11 +205,25 @@ TEST_CASE("Self-loop edge") {
 // Dijkstra should not link unreachable nodes
 TEST_CASE("Disconnected graph - Dijkstra should not link components") {
     Graph g(4);
-    g.addEdge(0, 1, 1);
-    g.addEdge(2, 3, 1);
+    g.addEdge(0, 1, 1);       // First connected component
+    g.addEdge(2, 3, 1);       // Second disconnected component
+
     Graph tree = Algorithms::dijkstra(g, 0);
-    Neighbor* n = tree.getNeighbors(2);
-    CHECK(n == nullptr);
+
+    // Check if there is any edge to node 2 (it should not be in the tree)
+    bool edgeTo2 = false;
+    for (int u = 0; u < tree.getNumVertices(); ++u) {
+        Neighbor* n = tree.getNeighbors(u);
+        while (n) {
+            if (n->vertex == 2) {
+                edgeTo2 = true;
+                break;
+            }
+            n = n->next;
+        }
+    }
+
+    CHECK(edgeTo2 == false);  // 2 must remain unreachable
 }
 
 // Algorithms on graph with a single node

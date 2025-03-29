@@ -81,71 +81,72 @@ Graph Algorithms::dfs(const Graph& g, int source) {
   return tree;
 }
 
+// Dijkstra: compute the shortest path tree from a given source
 Graph Algorithms::dijkstra(const Graph& g, int source) {
-  int n = g.getNumVertices();
+    int n = g.getNumVertices();
 
-  // Validate source vertex
-  if (source < 0 || source >= n)
-      throw "Invalid source vertex";
+    // Validate source vertex
+    if (source < 0 || source >= n)
+        throw "Invalid source vertex";
 
-  // Initialize distances array (set all to "infinity")
-  int* dist = new int[n];
-  for (int i = 0; i < n; ++i)
-      dist[i] = std::numeric_limits<int>::max();
-  dist[source] = 0;
+    // Initialize distances array
+    int* dist = new int[n];
+    for (int i = 0; i < n; ++i)
+        dist[i] = std::numeric_limits<int>::max();
+    dist[source] = 0;
 
-  // Store the parent of each node in the path
-  int* prev = new int[n];
-  for (int i = 0; i < n; ++i)
-      prev[i] = -1;
+    // Array to track shortest path tree
+    int* prev = new int[n];
+    for (int i = 0; i < n; ++i)
+        prev[i] = -1;
 
-  // Initialize priority queue with all vertices
-  PriorityQueue pq(n);
-  for (int i = 0; i < n; ++i)
-      pq.insert(i, dist[i]);
+    // Track visited nodes
+    bool* visited = new bool[n]();
 
-  while (!pq.isEmpty()) {
-      // Extract node with smallest distance
-      int u = pq.extractMin();
+    // Priority queue for distances
+    PriorityQueue pq(n);
+    for (int i = 0; i < n; ++i)
+        pq.insert(i, dist[i]);
 
-      // Traverse all neighbors of u
-      Neighbor* neighbors = g.getNeighbors(u);
-      while (neighbors != nullptr) {
-          int v = neighbors->vertex;
-          int weight = neighbors->weight;
+    while (!pq.isEmpty()) {
+        int u = pq.extractMin();
+        visited[u] = true;
 
-          // Relaxation step
-          if (dist[u] + weight < dist[v]) {
-              dist[v] = dist[u] + weight;
-              prev[v] = u;
-              pq.updateDistance(v, dist[v]);
-          }
+        Neighbor* neighbors = g.getNeighbors(u);
+        while (neighbors != nullptr) {
+            int v = neighbors->vertex;
+            int weight = neighbors->weight;
 
-          neighbors = neighbors->next;
-      }
-  }
+            if (!visited[v] && dist[u] + weight < dist[v]) {
+                dist[v] = dist[u] + weight;
+                prev[v] = u;
+                pq.updateDistance(v, dist[v]);
+            }
 
-  // Build result graph (shortest path tree)
-  Graph tree(n);
-  for (int v = 0; v < n; ++v) {
-      if (prev[v] != -1) {
-          // Edge from prev[v] to v
-          // Use the actual weight from original graph
-          Neighbor* neighbor = g.getNeighbors(v);
-          while (neighbor != nullptr) {
-              if (neighbor->vertex == prev[v]) {
-                  tree.addEdge(v, prev[v], neighbor->weight);
-                  break;
-              }
-              neighbor = neighbor->next;
-          }
-      }
-  }
+            neighbors = neighbors->next;
+        }
+    }
 
-  delete[] dist;
-  delete[] prev;
+    // Build shortest path tree
+    Graph tree(n);
+    for (int v = 0; v < n; ++v) {
+        if (prev[v] != -1 && dist[v] != std::numeric_limits<int>::max()) {
+            Neighbor* neighbors = g.getNeighbors(prev[v]);
+            while (neighbors != nullptr) {
+                if (neighbors->vertex == v) {
+                    tree.addDirectedEdge(prev[v], v, neighbors->weight);
+                    break;
+                }
+                neighbors = neighbors->next;
+            }
+        }
+    }
 
-  return tree;
+    delete[] dist;
+    delete[] prev;
+    delete[] visited;
+
+    return tree;
 }
 
 Graph Algorithms::prim(const Graph& g) {

@@ -43,7 +43,13 @@ void Graph::addEdge(int source, int dest, int weight){
         newVertex = new Neighbor(source, weight, adjList[dest]);
         adjList[dest] = newVertex; //add the neighbor to the list of the destination vertex
 }
-
+//Function to add a directed edge
+void Graph::addDirectedEdge(int from, int to, int weight) {
+  validateVertex(from);
+  validateVertex(to);
+  Neighbor* newNeighbor = new Neighbor(to, weight, adjList[from]);
+  adjList[from] = newNeighbor;
+}
 //helper function to remove a vertex v from neighbors list
 void removeNeighbor(Neighbor* &head, int v){
   if (head == nullptr) return;

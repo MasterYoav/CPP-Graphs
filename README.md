@@ -16,7 +16,7 @@ This project implements an undirected graph using an **adjacency list**, and inc
 - **Prim** – Minimum Spanning Tree (greedy)
 - **Kruskal** – Minimum Spanning Tree using Union-Find
 
-All code is written in **modern C++ (C++17)** using only **raw arrays and pointers**, without any use of STL containers like `vector`, `queue`, or `set`.
+All code is written in **C++** using only **raw arrays and pointers**, without any use of STL containers like `vector`, `queue`, or `set`.
 
 Memory management is done manually using `new` and `delete`, and verified using Valgrind.
 
@@ -43,20 +43,20 @@ make
 ./Main
 ```
 
-###  Run unit tests
+###  Run tests
 To compile and run the unit tests:
 ```bash
 make test
 ./test
 ```
 
-###  Run memory check with Valgrind
+###  Run memory checks with Valgrind
 To check for memory leaks:
 ```bash
 make valgrind
 ```
 
-###  Clean build artifacts
+###  Clean build files
 To remove all executables and object files:
 ```bash
 make clean
