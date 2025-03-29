@@ -23,34 +23,41 @@ Memory management is done manually using `new` and `delete`, and verified using 
 ---
 
 ##  Folder Structure
+```plaintext
 .
-├── include/             # H++ Header files
-├── src/                 # C++ implementations
-├── tests/               # Unit tests (doctest-based)
-├── Main.cpp             # Manual demo and integration test
-├── Makefile              # Makefile system builder
-├── README.md            # This file
-
+├── include/        # H++ Header files
+├── src/            # C++ implementations
+├── tests/          # Unit tests (doctest-based)
+├── Main.cpp        # Manual demo and integration test
+├── Makefile        # Makefile system builder
+└── README.md       # This file
+```
 ---
 
 ##  Build Instructions
 
 ###  Build the main demo
 To compile and run the main program:
-
+```bash
 make
 ./Main
+```
 
 ###  Run unit tests
 To compile and run the unit tests:
-
+```bash
 make test
 ./test
+```
 
 ###  Run memory check with Valgrind
 To check for memory leaks:
-
+```bash
 make valgrind
+```
 
 ###  Clean build artifacts
 To remove all executables and object files:
+```bash
+make clean
+```
