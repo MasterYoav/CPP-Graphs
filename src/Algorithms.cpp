@@ -17,6 +17,7 @@ depth before moving to the next level, using a queue to visit neighbors in order
 Returns a BFS tree
 */
 Graph Algorithms::bfs(const Graph& g, int source) {
+    g.validateVertex(source);
     int n = g.getNumVertices();
     bool* visited = new bool[n]();
     Queue q(n);
