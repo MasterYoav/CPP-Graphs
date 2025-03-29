@@ -1,12 +1,12 @@
 # Graph Algorithms Project – System Programming 2
 
-📧 Author: [realyoavperetz@gmail.com]  
-📁 Course: System Programming 2  
-📚 Topic: Graph algorithms using adjacency list, no STL
+Author: [realyoavperetz@gmail.com]  
+Course: System Programming 2  
+Topic: Graphs
 
 ---
 
-## 🧠 Project Description
+##  Project Description
 
 This project implements an undirected graph using an **adjacency list**, and includes classical graph algorithms such as:
 
@@ -22,7 +22,7 @@ Memory management is done manually using `new` and `delete`, and verified using 
 
 ---
 
-## 📁 Folder Structure
+##  Folder Structure
 .
 ├── include/             # H++ Header files
 ├── src/                 # C++ implementations
@@ -33,21 +33,24 @@ Memory management is done manually using `new` and `delete`, and verified using 
 
 ---
 
-## ⚙️ Build Instructions
+##  Build Instructions
 
-### 🔨 Build the main demo
+###  Build the main demo
 To compile and run the main program:
+
 make
 ./Main
 
-### ✅ Run unit tests
+###  Run unit tests
 To compile and run the unit tests:
+
 make test
 ./test
 
-### 🧪 Run memory check with Valgrind
+###  Run memory check with Valgrind
 To check for memory leaks:
+
 make valgrind
 
-### 🧹 Clean build artifacts
+###  Clean build artifacts
 To remove all executables and object files:
