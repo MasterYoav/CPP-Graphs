@@ -27,12 +27,16 @@ Graph::~Graph(){
   }
   delete[] adjList; //delete the pointers list
 }
-
+//Function to check vertex
+void Graph::validateVertex(int v) const {
+    if (v < 0 || v >= numVertices) {
+        throw "Invalid vertex index";
+    }
+}
 //Function to add an edge between two vertices
 void Graph::addEdge(int source, int dest, int weight){
-  if (source < 0 || source >= numVertices || dest < 0 || dest >= numVertices) {
-    throw "Invalid vertex index";
-  }
+  validateVertex(source);
+  validateVertex(dest);
   Neighbor* newVertex = new Neighbor(dest, weight, adjList[source]);
         adjList[source] = newVertex; //add the neighbor to the list of the source vertex
     
@@ -63,9 +67,8 @@ void removeNeighbor(Neighbor* &head, int v){
 
 
 void Graph::removeEdge(int source,int dest){
-  if (source < 0 || source >= numVertices || dest < 0 || dest >= numVertices){
-        throw "Invalid vertex index"; //throw an exception if the input is invalid
-  }
+  validateVertex(source);
+  validateVertex(dest);
   bool isEdge = false;
   Neighbor* current = adjList[source];
   while (current){ //searching the edge
@@ -100,7 +103,6 @@ int Graph::getNumVertices() const {
 
 //Function to get the neighbor list of a vertex
 Neighbor* Graph::getNeighbors(int vertex) const {
-  if (vertex < 0 || vertex >= numVertices)
-      throw "Invalid vertex index";
+  validateVertex(vertex);
   return adjList[vertex];
 }
