@@ -67,9 +67,7 @@ Graph Algorithms::dfs(const Graph& g, int source) {
   int n = g.getNumVertices();
 
   // Input validation
-  if (source < 0 || source >= n)
-      throw "Invalid source vertex";
-
+  g.validateVertex(source);
   Graph tree(n);
   bool* visited = new bool[n];
   for (int i = 0; i < n; ++i)
@@ -84,31 +82,29 @@ Graph Algorithms::dfs(const Graph& g, int source) {
 
 // Dijkstra: compute the shortest path tree from a given source
 Graph Algorithms::dijkstra(const Graph& g, int source) {
+    g.validateVertex(source);  // Ensure source is valid
     int n = g.getNumVertices();
 
-    // Validate source vertex
-    if (source < 0 || source >= n)
-        throw "Invalid source vertex";
-
-    // Initialize distances array
+    // Initialize distances to all vertices as infinity
     int* dist = new int[n];
     for (int i = 0; i < n; ++i)
         dist[i] = std::numeric_limits<int>::max();
     dist[source] = 0;
 
-    // Array to track shortest path tree
+    // Track the parent of each node in the shortest path
     int* prev = new int[n];
     for (int i = 0; i < n; ++i)
         prev[i] = -1;
 
-    // Track visited nodes
+    // Track visited vertices
     bool* visited = new bool[n]();
 
-    // Priority queue for distances
+    // Create a priority queue and insert all vertices
     PriorityQueue pq(n);
     for (int i = 0; i < n; ++i)
         pq.insert(i, dist[i]);
 
+    // Main Dijkstra loop
     while (!pq.isEmpty()) {
         int u = pq.extractMin();
         visited[u] = true;
@@ -117,6 +113,14 @@ Graph Algorithms::dijkstra(const Graph& g, int source) {
         while (neighbors != nullptr) {
             int v = neighbors->vertex;
             int weight = neighbors->weight;
+
+            // Dijkstra doesn't support negative weights
+            if (weight < 0) {
+                delete[] dist;
+                delete[] prev;
+                delete[] visited;
+                throw "Graph contains a negative weight edge – Dijkstra is not allowed";
+            }
 
             if (!visited[v] && dist[u] + weight < dist[v]) {
                 dist[v] = dist[u] + weight;
@@ -128,17 +132,17 @@ Graph Algorithms::dijkstra(const Graph& g, int source) {
         }
     }
 
-    // Build shortest path tree
+    // Build the shortest path tree graph
     Graph tree(n);
     for (int v = 0; v < n; ++v) {
         if (prev[v] != -1 && dist[v] != std::numeric_limits<int>::max()) {
-            Neighbor* neighbors = g.getNeighbors(prev[v]);
-            while (neighbors != nullptr) {
-                if (neighbors->vertex == v) {
-                    tree.addDirectedEdge(prev[v], v, neighbors->weight);
+            Neighbor* neighbor = g.getNeighbors(prev[v]);
+            while (neighbor != nullptr) {
+                if (neighbor->vertex == v) {
+                    tree.addDirectedEdge(prev[v], v, neighbor->weight);
                     break;
                 }
-                neighbors = neighbors->next;
+                neighbor = neighbor->next;
             }
         }
     }
@@ -149,7 +153,6 @@ Graph Algorithms::dijkstra(const Graph& g, int source) {
 
     return tree;
 }
-
 Graph Algorithms::prim(const Graph& g) {
   int n = g.getNumVertices();
 

@@ -225,7 +225,15 @@ TEST_CASE("Disconnected graph - Dijkstra should not link components") {
 
     CHECK(edgeTo2 == false);  // 2 must remain unreachable
 }
+// Dijkstra should throw when encountering a negative weight edge
+TEST_CASE("Dijkstra throws on negative edge") {
+    Graph g(3);
+    g.addEdge(0, 1, 2);
+    g.addEdge(1, 2, -5); // Invalid negative weight
 
+    CHECK_THROWS_WITH(Algorithms::dijkstra(g, 0),
+                      "Graph contains a negative weight edge – Dijkstra is not allowed");
+}
 // Algorithms on graph with a single node
 TEST_CASE("Single vertex graph") {
     Graph g(1);
@@ -239,4 +247,62 @@ TEST_CASE("Invalid source vertex for BFS/DFS") {
     Graph g(3);
     CHECK_THROWS(Algorithms::bfs(g, 5));
     CHECK_THROWS(Algorithms::dfs(g, -1));
+}
+// Prim on disconnected graph should return incomplete MST
+TEST_CASE("Prim on disconnected graph") {
+    Graph g(5);
+    g.addEdge(0, 1, 1);
+    g.addEdge(1, 2, 2);
+    g.addEdge(3, 4, 3); // disconnected component
+
+    Graph mst = Algorithms::prim(g);
+
+    // Prim should not connect components
+    int edgeCount = 0;
+    for (int u = 0; u < mst.getNumVertices(); ++u) {
+        Neighbor* n = mst.getNeighbors(u);
+        while (n) {
+            ++edgeCount;
+            n = n->next;
+        }
+    }
+    CHECK(edgeCount / 2 < 4); // less than n-1 edges for disconnected graph
+}
+
+// Loop edge should not appear in MST
+TEST_CASE("Self-loop should be ignored in MST") {
+    Graph g(3);
+    g.addEdge(0, 1, 1);
+    g.addEdge(1, 2, 2);
+    g.addEdge(1, 1, 9); // loop edge
+
+    Graph mst = Algorithms::prim(g);
+
+    // Check that node 1 does not have self-loop
+    Neighbor* n = mst.getNeighbors(1);
+    bool hasLoop = false;
+    while (n) {
+        if (n->vertex == 1) hasLoop = true;
+        n = n->next;
+    }
+    CHECK(hasLoop == false);
+}
+// Kruskal with zero-weight edge should include it in MST
+TEST_CASE("Kruskal includes zero-weight edge") {
+    Graph g(4);
+    g.addEdge(0, 1, 0);  // zero-weight edge
+    g.addEdge(1, 2, 2);
+    g.addEdge(2, 3, 3);
+
+    Graph mst = Algorithms::kruskal(g);
+
+    // Check that 0-1 with weight 0 appears in the MST
+    Neighbor* n = mst.getNeighbors(0);
+    bool found = false;
+    while (n) {
+        if (n->vertex == 1 && n->weight == 0)
+            found = true;
+        n = n->next;
+    }
+    CHECK(found);
 }
