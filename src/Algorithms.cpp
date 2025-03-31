@@ -216,58 +216,85 @@ Graph Algorithms::prim(const Graph& g) {
 
   return mst;
 }
+// Helper Edge struct - for Merge Sort
+struct Edge {
+    int u, v, weight;
+};
 
-Graph Algorithms::kruskal(const Graph& g) {
-  int n = g.getNumVertices();
+// Merge function for Merge Sort
+void merge(Edge* arr, int left, int mid, int right) {
+    int n1 = mid - left + 1;
+    int n2 = right - mid;
 
-  // Step 1: collect all edges
-  const int MAX_EDGES = n * n; // upper bound (dense)
-  struct Edge {
-      int u, v, weight;
-  };
-  Edge* edges = new Edge[MAX_EDGES];
-  int edgeCount = 0;
+    Edge* L = new Edge[n1];
+    Edge* R = new Edge[n2];
 
-  for (int u = 0; u < n; ++u) {
-      Neighbor* curr = g.getNeighbors(u);
-      while (curr != nullptr) {
-          int v = curr->vertex;
-          if (u < v) { // to avoid duplicate undirected edges
-              edges[edgeCount++] = {u, v, curr->weight};
-          }
-          curr = curr->next;
-      }
-  }
+    for (int i = 0; i < n1; ++i) L[i] = arr[left + i];
+    for (int j = 0; j < n2; ++j) R[j] = arr[mid + 1 + j];
 
-  // Step 2: sort edges by weight (selection sort)
-  for (int i = 0; i < edgeCount - 1; ++i) {
-      int minIdx = i;
-      for (int j = i + 1; j < edgeCount; ++j) {
-          if (edges[j].weight < edges[minIdx].weight)
-              minIdx = j;
-      }
-      if (minIdx != i) {
-          Edge temp = edges[i];
-          edges[i] = edges[minIdx];
-          edges[minIdx] = temp;
-      }
-  }
+    int i = 0, j = 0, k = left;
 
-  // Step 3: Kruskal using Union-Find
-  UnionFind uf(n);
-  Graph mst(n);
+    while (i < n1 && j < n2) {
+        if (L[i].weight <= R[j].weight)
+            arr[k++] = L[i++];
+        else
+            arr[k++] = R[j++];
+    }
 
-  for (int i = 0; i < edgeCount; ++i) {
-      int u = edges[i].u;
-      int v = edges[i].v;
-      int w = edges[i].weight;
+    while (i < n1) arr[k++] = L[i++];
+    while (j < n2) arr[k++] = R[j++];
 
-      if (!uf.connected(u, v)) {
-          uf.unite(u, v);
-          mst.addEdge(u, v, w);
-      }
-  }
-
-  delete[] edges;
-  return mst;
+    delete[] L;
+    delete[] R;
 }
+
+// Merge Sort on array of edges
+void mergeSort(Edge* arr, int left, int right) {
+    if (left < right) {
+        int mid = left + (right - left) / 2;
+        mergeSort(arr, left, mid);
+        mergeSort(arr, mid + 1, right);
+        merge(arr, left, mid, right);
+    }
+}
+Graph Algorithms::kruskal(const Graph& g) {
+    int n = g.getNumVertices();
+
+    // Step 1: collect all edges
+    const int MAX_EDGES = n * n;
+    Edge* edges = new Edge[MAX_EDGES];
+    int edgeCount = 0;
+
+    for (int u = 0; u < n; ++u) {
+        Neighbor* curr = g.getNeighbors(u);
+        while (curr != nullptr) {
+            int v = curr->vertex;
+            if (u < v) {
+                edges[edgeCount++] = {u, v, curr->weight};
+            }
+            curr = curr->next;
+        }
+    }
+
+    // Step 2: sort edges by weight
+    mergeSort(edges, 0, edgeCount - 1);
+
+    // Step 3: Kruskal's algorithm with Union-Find
+    UnionFind uf(n);
+    Graph mst(n);
+
+    for (int i = 0; i < edgeCount; ++i) {
+        int u = edges[i].u;
+        int v = edges[i].v;
+        int w = edges[i].weight;
+
+        if (!uf.connected(u, v)) {
+            uf.unite(u, v);
+            mst.addEdge(u, v, w);
+        }
+    }
+
+    delete[] edges;
+    return mst;
+}
+

@@ -1,11 +1,11 @@
 //Author: realyoavperetz@gmail.com
 
-#include <iostream> // for std::cout
+#include <iostream> 
 #include "../include/Graph.hpp" 
 
-using namespace graph; //using the graph namespace
+using namespace graph; 
 
-//construct Graph with fixed number of vertices
+//Construct graph with fixed number of vertices
 Graph::Graph(int numVertices) : numVertices(numVertices){ 
   
   adjList = new Neighbor*[numVertices]; //Memory allocation
@@ -27,7 +27,7 @@ Graph::~Graph(){
   }
   delete[] adjList; //delete the pointers list
 }
-//Function to check vertex
+//Function to check vertices index validity
 void Graph::validateVertex(int v) const {
     if (v < 0 || v >= numVertices) {
         throw "Invalid vertex index";
@@ -50,7 +50,7 @@ void Graph::addDirectedEdge(int from, int to, int weight) {
   Neighbor* newNeighbor = new Neighbor(to, weight, adjList[from]);
   adjList[from] = newNeighbor;
 }
-//helper function to remove a vertex v from neighbors list
+//Helper function to remove a vertex v from neighbors list
 void removeNeighbor(Neighbor* &head, int v){
   if (head == nullptr) return;
 
@@ -71,7 +71,7 @@ void removeNeighbor(Neighbor* &head, int v){
     }
 }
 
-
+//Method to remove an edge between vertices
 void Graph::removeEdge(int source,int dest){
   validateVertex(source);
   validateVertex(dest);
@@ -90,24 +90,31 @@ void Graph::removeEdge(int source,int dest){
   removeNeighbor(adjList[dest], source); //removing vertex from the destination neighbors list
 }
 
+//Graph printing method
 void Graph::printGraph() const {
-    for (int i = 0; i < numVertices; ++i) {
-        std::cout << "Vertex " << i << ": ";
-        Neighbor* current = adjList[i];
-        while (current) {
-            std::cout << "(" << current->vertex << ", w=" << current->weight << ") ";
-            current = current->next;
-        }
-        std::cout << std::endl;
-    }
+  std::cout << "Adjacency List:" << std::endl;
+  for (int i = 0; i < numVertices; ++i) {
+      std::cout << "  [" << i << "] --> ";
+      Neighbor* current = adjList[i];
+      if (!current) {
+          std::cout << "(none)";
+      }
+      while (current) {
+          std::cout << current->vertex << " (w:" << current->weight << ")";
+          if (current->next)
+              std::cout << " -> ";
+          current = current->next;
+      }
+      std::cout << std::endl;
+  }
 }
 
-//Function to print the graph
+//Method that returns the vertices number of the graph
 int Graph::getNumVertices() const {
   return numVertices;
 }
 
-//Function to get the neighbor list of a vertex
+//Method to get the neighbor list of a vertex
 Neighbor* Graph::getNeighbors(int vertex) const {
   validateVertex(vertex);
   return adjList[vertex];

@@ -306,3 +306,65 @@ TEST_CASE("Kruskal includes zero-weight edge") {
     }
     CHECK(found);
 }
+//Prim should build an MST with the lightest possible edges
+TEST_CASE("Prim builds correct minimum spanning tree") {
+    Graph g(5);
+    /*
+        Lightest MST edges should be: (0,1), (1,2), (1,3), (3,4)
+    */
+    g.addEdge(0, 1, 1);
+    g.addEdge(1, 2, 2);
+    g.addEdge(1, 3, 5);
+    g.addEdge(3, 4, 7);
+
+    // Heavy edges
+    g.addEdge(0, 3, 10);
+    g.addEdge(2, 3, 20);
+    g.addEdge(0, 4, 30);
+
+    Graph mst = Algorithms::prim(g);
+
+    int totalWeight = 0;
+    for (int i = 0; i < mst.getNumVertices(); ++i) {
+        Neighbor* n = mst.getNeighbors(i);
+        while (n) {
+            totalWeight += n->weight;
+            n = n->next;
+        }
+    }
+
+    CHECK(totalWeight / 2 == 15);
+}
+//Kruskal should always pick the lightest possible edges for MST
+TEST_CASE("Kruskal picks minimal weight edges for MST") {
+    Graph g(5);
+    /*
+        The lightest edges that should be picked in the MST:
+        (0,1), (1,2), (1,3), (3,4)
+        We'll also add heavier edges to ensure Kruskal ignores them.
+    */
+    g.addEdge(0, 1, 1);
+    g.addEdge(1, 2, 2);
+    g.addEdge(1, 3, 4);
+    g.addEdge(3, 4, 6);
+
+    // Heavy edges
+    g.addEdge(0, 3, 10);
+    g.addEdge(2, 3, 20);
+    g.addEdge(0, 4, 30);
+
+    Graph mst = Algorithms::kruskal(g);
+
+    // Calculate total weight of the MST
+    int totalWeight = 0;
+    for (int i = 0; i < mst.getNumVertices(); ++i) {
+        Neighbor* n = mst.getNeighbors(i);
+        while (n) {
+            totalWeight += n->weight;
+            n = n->next;
+        }
+    }
+
+    // Since edges are undirected and stored twice, divide by 2
+    CHECK(totalWeight / 2 == 13);
+}
