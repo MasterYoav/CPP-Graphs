@@ -1,5 +1,4 @@
 # Author: realyoavperetz@gmail.com
-# Makefile for Graph Algorithms Project (System Programming 2)
 
 # Default build: compile both targets
 .PHONY: all
@@ -11,12 +10,12 @@ main: Main
 	./Main
 
 Main: Main.cpp \
-	src/Graph.cpp src/Algorithms.cpp src/Queue.cpp \
-	src/PriorityQueue.cpp src/UnionFind.cpp
+	source/Graph.cpp source/Algorithms.cpp source/Queue.cpp \
+	source/PriorityQueue.cpp source/UnionFind.cpp
 	g++ -Wall -Wextra -std=c++17 -Iinclude \
 	Main.cpp \
-	src/Graph.cpp src/Algorithms.cpp src/Queue.cpp \
-	src/PriorityQueue.cpp src/UnionFind.cpp \
+	source/Graph.cpp source/Algorithms.cpp source/Queue.cpp \
+	source/PriorityQueue.cpp source/UnionFind.cpp \
 	-o Main
 
 # Compile and run test
@@ -25,12 +24,12 @@ test: test.exe
 	./test.exe
 
 test.exe: tests/test.cpp \
-	src/Graph.cpp src/Algorithms.cpp src/Queue.cpp \
-	src/PriorityQueue.cpp src/UnionFind.cpp
+	source/Graph.cpp source/Algorithms.cpp source/Queue.cpp \
+	source/PriorityQueue.cpp source/UnionFind.cpp
 	g++ -Wall -Wextra -std=c++17 -Iinclude \
 	tests/test.cpp \
-	src/Graph.cpp src/Algorithms.cpp src/Queue.cpp \
-	src/PriorityQueue.cpp src/UnionFind.cpp \
+	source/Graph.cpp source/Algorithms.cpp source/Queue.cpp \
+	source/PriorityQueue.cpp source/UnionFind.cpp \
 	-o test.exe
 
 # Run valgrind on tests
@@ -38,7 +37,7 @@ test.exe: tests/test.cpp \
 valgrind: test.exe
 	valgrind ./test.exe
 
-# Clean artifacts
+# Clean build files
 .PHONY: clean
 clean:
-	rm -f Main test.exe src/*.o
+	rm -f Main test.exe source/*.o

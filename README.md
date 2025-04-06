@@ -18,19 +18,34 @@ This project implements an undirected graph using an **adjacency list**, and inc
 
 All code is written in **C++** using only **raw arrays and pointers**, without any use of STL containers like `vector`, `queue`, or `set`.
 
-Memory management is done manually using `new` and `delete`, and verified using Valgrind.
-
+- **Unit Testing:** Built with doctest
+- **Memory Management:** Fully manual (`new`, `delete`), validated with **Valgrind**
+- **No STL:** All data structures (queue, priority queue, union-find, sorting) are implemented manually
 ---
 
 ##  Folder Structure
 ```plaintext
 .
-├── include/        # H++ Header files
-├── src/            # C++ implementations
-├── tests/          # Unit tests (doctest-based)
-├── Main.cpp        # Manual demo and integration test
-├── Makefile        # Makefile system builder
-└── README.md       # This file
+├── include/          # Header files (.h/.hpp)
+│   ├── Graph.hpp
+│   ├── Algorithms.hpp
+│   ├── Queue.hpp
+│   ├── PriorityQueue.hpp
+│   └── UnionFind.hpp
+│
+├── source/              # Implementation files (.cpp)
+│   ├── Graph.cpp
+│   ├── Algorithms.cpp
+│   ├── Queue.cpp
+│   ├── PriorityQueue.cpp
+│   └── UnionFind.cpp
+│
+├── tests/            # Unit test file (doctest-based)
+│   └── test.cpp
+│
+├── Main.cpp          # Interactive demo
+├── Makefile          # Program builder 
+└── README.md         # This file
 ```
 ---
 
@@ -61,3 +76,6 @@ To remove all executables and object files:
 ```bash
 make clean
 ```
+
+
+

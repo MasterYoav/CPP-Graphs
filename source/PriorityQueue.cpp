@@ -1,3 +1,5 @@
+// Author: realyoavperetz@gmail.com
+
 #include "../include/PriorityQueue.hpp"
 #include <limits> // for INT_MAX equivalent
 

@@ -1,6 +1,7 @@
 // Author: realyoavperetz@gmail.com
+
 // Unit tests for the Graph project using doctest
-// Includes core functionality + edge cases for robustness
+// Includes core functionality + edge case tests
 
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include "../include/doctest.h"
