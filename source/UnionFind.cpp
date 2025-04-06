@@ -1,3 +1,5 @@
+// Author: realyoavperetz@gmail.com
+
 #include "../include/UnionFind.hpp"
 
 using namespace graph;
