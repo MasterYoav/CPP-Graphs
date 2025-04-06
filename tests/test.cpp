@@ -6,12 +6,78 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include "../include/doctest.h"
 #include "../include/Graph.hpp"
+#include "../include/Queue.hpp"
+#include "../include/PriorityQueue.hpp"
+#include "../include/UnionFind.hpp"
 #include "../include/Algorithms.hpp"
 
 using namespace graph;
 
 // ----------------------------------------------------------
-// Basic Functionality Tests for Graph
+// Data Structure Tests
+// ----------------------------------------------------------
+
+//Queue
+TEST_CASE("Queue basic enqueue and dequeue") {
+    Queue q(5);
+    q.enqueue(1);
+    q.enqueue(2);
+    CHECK(q.dequeue() == 1);
+    CHECK(q.dequeue() == 2);
+    CHECK(q.isEmpty() == true);
+}
+
+TEST_CASE("Queue overflow throws") {
+    Queue q(2);
+    q.enqueue(1);
+    q.enqueue(2);
+    CHECK_THROWS(q.enqueue(3)); // should throw on overflow
+}
+
+TEST_CASE("Queue underflow throws") {
+    Queue q(2);
+    CHECK_THROWS(q.dequeue()); // should throw on empty dequeue
+}
+
+//Priority-queue
+TEST_CASE("PriorityQueue insert and extractMin") {
+    PriorityQueue pq(3);
+    pq.insert(0, 5);
+    pq.insert(1, 2);
+    pq.insert(2, 3);
+
+    CHECK(pq.extractMin() == 1); // 2 is smallest
+    CHECK(pq.extractMin() == 2);
+    CHECK(pq.extractMin() == 0);
+}
+
+TEST_CASE("PriorityQueue updateDistance changes priority") {
+    PriorityQueue pq(3);
+    pq.insert(0, 5);
+    pq.insert(1, 10);
+    pq.updateDistance(1, 1); // update 1 → lower than 0
+
+    CHECK(pq.extractMin() == 1); // should now come first
+}
+
+//union-find
+TEST_CASE("UnionFind basic connectivity") {
+    UnionFind uf(4);
+    CHECK(uf.connected(0, 1) == false);
+    uf.unite(0, 1);
+    CHECK(uf.connected(0, 1));
+}
+
+TEST_CASE("Union-Find  merging") {
+    UnionFind uf(4);
+    uf.unite(0, 1);
+    uf.unite(1, 2);
+    CHECK(uf.connected(0, 2));
+    CHECK(!uf.connected(0, 3));
+}
+
+// ----------------------------------------------------------
+// Functionality Tests for Graph
 // ----------------------------------------------------------
 
 // Check basic edge addition and neighbor retrieval
