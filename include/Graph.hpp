@@ -1,5 +1,3 @@
-//Author: realyoavperetz@gmail.com
-
 #pragma once
 
 namespace graph{
@@ -22,7 +20,6 @@ namespace graph{
     
     void validateVertex(int v) const;
     void addEdge(int src, int dest, int weight);
-    void addDirectedEdge(int from, int to, int weight);
     void removeEdge(int src, int dest);
     void printGraph()const;
     int getNumVertices()const;

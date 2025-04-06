@@ -80,7 +80,6 @@ Graph Algorithms::dfs(const Graph& g, int source) {
   return tree;
 }
 
-// Dijkstra: compute the shortest path tree from a given source
 Graph Algorithms::dijkstra(const Graph& g, int source) {
     g.validateVertex(source);  // Ensure source is valid
     int n = g.getNumVertices();
@@ -122,7 +121,8 @@ Graph Algorithms::dijkstra(const Graph& g, int source) {
                 throw "Graph contains a negative weight edge – Dijkstra is not allowed";
             }
 
-            if (!visited[v] && dist[u] + weight < dist[v]) {
+            // ✅ Prevent overflow and incorrect updates
+            if (dist[u] != std::numeric_limits<int>::max() && !visited[v] && dist[u] + weight < dist[v]) {
                 dist[v] = dist[u] + weight;
                 prev[v] = u;
                 pq.updateDistance(v, dist[v]);
@@ -139,7 +139,7 @@ Graph Algorithms::dijkstra(const Graph& g, int source) {
             Neighbor* neighbor = g.getNeighbors(prev[v]);
             while (neighbor != nullptr) {
                 if (neighbor->vertex == v) {
-                    tree.addDirectedEdge(prev[v], v, neighbor->weight);
+                    tree.addEdge(prev[v], v, neighbor->weight);
                     break;
                 }
                 neighbor = neighbor->next;

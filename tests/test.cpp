@@ -202,28 +202,25 @@ TEST_CASE("Self-loop edge") {
     CHECK(hasSelf);
 }
 
-// Dijkstra should not link unreachable nodes
 TEST_CASE("Disconnected graph - Dijkstra should not link components") {
     Graph g(4);
-    g.addEdge(0, 1, 1);       // First connected component
-    g.addEdge(2, 3, 1);       // Second disconnected component
+    g.addEdge(0, 1, 1);       // Connected component
+    g.addEdge(2, 3, 1);       // Disconnected component
 
     Graph tree = Algorithms::dijkstra(g, 0);
 
-    // Check if there is any edge to node 2 (it should not be in the tree)
-    bool edgeTo2 = false;
+    // Check neighbors of 2
+    Neighbor* neighborsOf2 = tree.getNeighbors(2);
+    CHECK(neighborsOf2 == nullptr);
+
+    // Also make sure no one connects *to* 2
     for (int u = 0; u < tree.getNumVertices(); ++u) {
         Neighbor* n = tree.getNeighbors(u);
         while (n) {
-            if (n->vertex == 2) {
-                edgeTo2 = true;
-                break;
-            }
+            CHECK(n->vertex != 2);
             n = n->next;
         }
     }
-
-    CHECK(edgeTo2 == false);  // 2 must remain unreachable
 }
 // Dijkstra should throw when encountering a negative weight edge
 TEST_CASE("Dijkstra throws on negative edge") {
